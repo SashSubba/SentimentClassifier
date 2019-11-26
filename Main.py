@@ -25,9 +25,14 @@ if __name__ == "__main__":
 
         for key in labelFreq:
             finalProb[key] = labelFreq[key] / labelSum
-            ##TESTING PURPOSES: print(labelFreq[key], "-----------", labelSum, "------------", labelFreq[key] / labelSum)
+            print(labelFreq[key], "-----------", labelSum, "------------", labelFreq[key] / labelSum)
 
-        ##TESTING PURPOSES: print(labelFreq, labelSum, finalProb)
+        print(labelFreq, labelSum, finalProb)
+
+        for i in range(labelSum):
+            if labels[i] == finalProb.keys()[0]
+
+        return finalProb
 
     print("----------------------------------------------------------------------------------------------------")
     print("Welcome to our Customer Review Sentiment Classification Program!\n")
@@ -44,3 +49,4 @@ if __name__ == "__main__":
     testLabels = labelsFile[int(0.80*len(labelsFile)):]
 
     finalProb = document_probabilities(trainDocs, trainLabels)
+    print(finalProb)
