@@ -18,40 +18,41 @@ if __name__ == "__main__":
         negFiles = []
         posFreq = Counter()
         negFreq = Counter()
-        negFiles = []
         labelFreq = Counter()
         totalNbReviews = len(labels)
 
-        for label in labels:                    #Get Frequency of "neg" and "pos"
+        for label in labels:                                                        #Get Frequency of "neg" and "pos"
             labelFreq[label] += 1
 
-        for key in labelFreq:                   #Added P("pos") and P("neg") to the final prob dict.
+        for key in labelFreq:                                       #Added P("pos") and P("neg") to the final prob dict.
             finalProb[key] = labelFreq[key] / totalNbReviews
             #print(labelFreq[key], "-----------", totalNbReviews, "------------", labelFreq[key] / totalNbReviews)
 
         #print(labelFreq, totalNbReviews, finalProb)
 
-        for i in range(totalNbReviews):               #Separation of Pos and Neg Reviews
+        for i in range(totalNbReviews):                                             #Separation of Pos and Neg Reviews
             if labels[i] == "pos":
                 posFiles.append(documents[i])
             else:
                 negFiles.append(documents[i])
 
-        for review in posFiles:
+        for review in posFiles:                                                         #Get Frequency of "pos" words
             for word in review:
                 posFreq[word] += 1
 
-        for review in negFiles:
+        for review in negFiles:                                                         ##Get Frequency of "neg" words
             for word in review:
                 negFreq[word] += 1
 
-        for key in posFreq:
+        for key in posFreq:                                                         #Add word prob of "pos" to finalProb
             finalProb[key + "/pos"] = posFreq[key] / len(posFiles)
 
-        for key in negFreq:
+        for key in negFreq:                                                         #Add word prob of "neg" to finalProb
             finalProb[key + "/neg"] = posFreq[key] / len(negFiles)
 
         return finalProb
+
+
 
     print("----------------------------------------------------------------------------------------------------")
     print("Welcome to our Customer Review Sentiment Classification Program!\n")
