@@ -14,23 +14,42 @@ if __name__ == "__main__":
 
     def document_probabilities(documents, labels):
         finalProb = {}
+        posFiles = []
+        negFiles = []
+        posFreq = Counter()
+        negFreq = Counter()
+        negFiles = []
         labelFreq = Counter()
-        labelSum = 0
+        totalNbReviews = len(labels)
 
-        for label in labels:
+        for label in labels:                    #Get Frequency of "neg" and "pos"
             labelFreq[label] += 1
 
-        for value in labelFreq.values():
-            labelSum += value
+        for key in labelFreq:                   #Added P("pos") and P("neg") to the final prob dict.
+            finalProb[key] = labelFreq[key] / totalNbReviews
+            #print(labelFreq[key], "-----------", totalNbReviews, "------------", labelFreq[key] / totalNbReviews)
 
-        for key in labelFreq:
-            finalProb[key] = labelFreq[key] / labelSum
-            print(labelFreq[key], "-----------", labelSum, "------------", labelFreq[key] / labelSum)
+        #print(labelFreq, totalNbReviews, finalProb)
 
-        print(labelFreq, labelSum, finalProb)
+        for i in range(totalNbReviews):               #Separation of Pos and Neg Reviews
+            if labels[i] == "pos":
+                posFiles.append(documents[i])
+            else:
+                negFiles.append(documents[i])
 
-        for i in range(labelSum):
-            if labels[i] == finalProb.keys()[0]
+        for review in posFiles:
+            for word in review:
+                posFreq[word] += 1
+
+        for review in negFiles:
+            for word in review:
+                negFreq[word] += 1
+
+        for key in posFreq:
+            finalProb[key + "/pos"] = posFreq[key] / len(posFiles)
+
+        for key in negFreq:
+            finalProb[key + "/neg"] = posFreq[key] / len(negFiles)
 
         return finalProb
 
@@ -49,4 +68,3 @@ if __name__ == "__main__":
     testLabels = labelsFile[int(0.80*len(labelsFile)):]
 
     finalProb = document_probabilities(trainDocs, trainLabels)
-    print(finalProb)
