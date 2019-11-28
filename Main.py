@@ -1,7 +1,6 @@
 from collections import Counter
 import numpy as np
 
-
 if __name__ == "__main__":
 
     def document_separation(document):
@@ -64,7 +63,7 @@ if __name__ == "__main__":
         print(finalProb)
         return finalProb
 
-    def docScore(document, label, final_probs):
+    def document_score(document, label, final_probs):
         Score = np.log(final_probs[label])
 
         for word in document.strip().split():
@@ -76,7 +75,16 @@ if __name__ == "__main__":
                 Score += np.log(0.5/final_probs[temp2])
         return np.exp(Score)
 
-    def docClassify(document, final_probs):
+    def string_classification(document, final_probs):
+        """Return the label of the given document
+        
+        Arguments:
+            document {String} -- document 
+            final_probs {list} -- list containing probabilities of each word from training set
+        
+        Returns:
+            String -- guessed label of document
+        """
         posScore = np.log(final_probs["pos"])
         negScore = np.log(final_probs["neg"])
 
@@ -95,8 +103,69 @@ if __name__ == "__main__":
 
         if posScore > negScore:
             print("The document classifies as a positive review.")
+            return "pos"
         else:
             print("The document classifies as a negative review.")
+            return "neg"
+
+    def document_classification(docs, final_probs):
+        """finds the labels of each document in docs
+
+        Arguments:
+            docs {list} -- list containing test documents
+            final_probs {list} -- list containing probabilities of word from training set
+        
+        Returns:
+            guessedLabels -- list containing guessed labels of each document
+        """
+
+        guessedLabels = []  #list containing labels of each document
+
+        for doc in docs:
+            posScore = np.log(final_probs["pos"])
+            negScore = np.log(final_probs["neg"])
+
+            for word in doc:
+                temp = word + "/pos"
+                if temp in final_probs:
+                    posScore += np.log(final_probs[temp])
+                else:
+                    posScore += np.log(0.5/final_probs["posTotalSmoothing"])   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+
+                temp = word + "/neg"
+                if temp in final_probs:
+                    negScore += np.log(final_probs[temp])
+                else:
+                    negScore += np.log(0.5/final_probs["negTotalSmoothing"])   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+            
+
+            if posScore > negScore :
+                guessedLabels.append("pos")
+            else:
+                guessedLabels.append("neg")
+
+        return guessedLabels
+
+
+    def document_accuracy(true_labels, guessed_labels):
+        """Computes the accuracy of guessed labels against true_labels of the test set
+        
+        Arguments:
+            true_labels {List} -- [true labels for each document]
+            guessed_labels {List} -- [guessed labels for each document]
+        
+        Returns:
+            [accuracy] -- accuracy of guessed_labels
+        """
+
+        nbCorrectlyClassifiedDocuments = 0
+        nbTestDocuments = len(true_labels)
+
+        for i in range(nbTestDocuments):
+            if guessed_labels[i] == true_labels[i]:
+                nbCorrectlyClassifiedDocuments += 1
+
+        return (nbCorrectlyClassifiedDocuments / nbTestDocuments)
 
     print("----------------------------------------------------------------------------------------------------")
     print("Welcome to our Customer Review Sentiment Classification Program!\n")
@@ -118,9 +187,14 @@ if __name__ == "__main__":
     if scoreQuestion.lower() == "yes":
         scoreFileDoc = input("\nPlease write the document file you would like to have scored: ")
         scoreFileLabel = input("\nPlease write the label of the document you would like to have scored: ")
-        print(docScore(scoreFileDoc, scoreFileLabel, finalProb))
+        print(document_score(scoreFileDoc, scoreFileLabel, finalProb))
 
     classifyQuestion = input("\nDo you want to have a document classified? (yes or no): ")
     if classifyQuestion.lower() == "yes":
         classifyFile = input("\nPlease write the document file you would like to have classified: ")
-        docClassify(classifyFile, finalProb)
+        string_classification(classifyFile, finalProb)
+
+    accuracyQuestion = input("\nDo you want to evaluate the accuracy of the document file that was trained? (yes or no): ")
+    if accuracyQuestion.lower() == "yes":
+        guessedLabels = document_classification(testDocs,finalProb)#list containing guessed labels for each documens
+        print("The accuracy is : ", document_accuracy(testLabels,guessedLabels))
