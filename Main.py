@@ -107,9 +107,9 @@ if __name__ == "__main__":
 
     docsFile, labelsFile = document_separation(dataFile)
 
-    trainDocs = docsFile#[:int(0.80*len(docsFile))]
+    trainDocs = docsFile[:int(0.80*len(docsFile))]
     testDocs = docsFile[int(0.80*len(docsFile)):]
-    trainLabels = labelsFile#[:int(0.80*len(labelsFile))]
+    trainLabels = labelsFile[:int(0.80*len(labelsFile))]
     testLabels = labelsFile[int(0.80*len(labelsFile)):]
 
     finalProb = document_probabilities(trainDocs, trainLabels)
