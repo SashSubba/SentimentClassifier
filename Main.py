@@ -20,6 +20,16 @@ if __name__ == "__main__":
         negFreq = Counter()
         labelFreq = Counter()
         totalNbReviews = len(labels)
+        totalNbWordsFreq = Counter()
+        totalNbWords = 0
+
+        for review in documents:
+            for word in review:
+                totalNbWordsFreq[word] += 1
+
+        totalNbWords = len(totalNbWordsFreq)
+
+        print(totalNbWords)
 
         for label in labels:                                                        #Get Frequency of "neg" and "pos"
             labelFreq[label] += 1
@@ -52,13 +62,47 @@ if __name__ == "__main__":
 
         return finalProb
 
+    def docScore(document, label, final_probs):
+        """
+
+        :param document: existing or new document to be checked for label score
+        :param label: sentiment polarity label
+        :param final_probs: probabilities of each word given label and label itself, based on training set computed in document_probabilities
+        :return: logarithm of probability of sentiment polarity label
+        """
+        posScore = np.log(final_probs["pos"])
+        negScore = np.log(final_probs["neg"])
+
+
+        for word in document:
+            if (word + "/pos") in final_probs:
+                posScore += np.log(final_probs[word+"/pos"])
+            else:
+                posScore += np.log(0.5/0)   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+            if (word + "/neg") in final_probs:
+                negScore += np.log(final_probs[word+"/neg"])
+            else:
+                negScore += np.log(0.5/0)   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+
+        print(posScore)
+        print(negScore)
+
+
+
+
+
+
+
+
+
+
 
 
     print("----------------------------------------------------------------------------------------------------")
     print("Welcome to our Customer Review Sentiment Classification Program!\n")
 
     dataFile = input("Please write the document file you would like to have evaluated (e.g. all_sentiment.txt ): ")
-    dataFile = open("all_sentiment_shuffled.txt", encoding="utf8")
+    dataFile = open("testingFile.txt", encoding="utf8")
     # for testing purposes only, need to switch "all_sentiment_shuffled.txt" back to dataFile
 
     docsFile, labelsFile = document_separation(dataFile)
@@ -69,3 +113,5 @@ if __name__ == "__main__":
     testLabels = labelsFile[int(0.80*len(labelsFile)):]
 
     finalProb = document_probabilities(trainDocs, trainLabels)
+
+    docScore(trainDocs, testDocs, finalProb)
