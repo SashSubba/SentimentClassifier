@@ -216,8 +216,8 @@ if __name__ == "__main__":
         if scoreQuestion.lower() == "yes":
             scoreFileDoc = input("\nPlease write the document file you would like to have scored: ")
             while scoreFileLabel.lower() not in ["pos", "neg"]:
-                scoreFileLabel = input("\nPlease write the label of the document you would like to have scored: ")
-                print(document_score(scoreFileDoc, scoreFileLabel, finalProb))
+                scoreFileLabel = input("\nPlease write the label of the document you would like to have scored ('pos' or 'neg'): ")
+            print(document_score(scoreFileDoc, scoreFileLabel, finalProb))
 
     while classifyQuestion.lower() not in ["yes", "no"]:
         classifyQuestion = input("\nDo you want to have a document classified? (yes or no): ")
