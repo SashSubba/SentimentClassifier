@@ -120,13 +120,13 @@ if __name__ == "__main__":
             if temp in final_probs:
                 posScore += np.log(final_probs[temp])
             else:
-                posScore += np.log(0.5/final_probs["posTotalSmoothing"])   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+                posScore += np.log(0.5/final_probs["posTotalSmoothing"])   
 
             temp = word + "/neg"
             if temp in final_probs:
                 negScore += np.log(final_probs[temp])
             else:
-                negScore += np.log(0.5/final_probs["negTotalSmoothing"])   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+                negScore += np.log(0.5/final_probs["negTotalSmoothing"])   
 
         if posScore > negScore:
             print("The document classifies as a positive review.")
@@ -155,13 +155,13 @@ if __name__ == "__main__":
                 if temp in final_probs:
                     posScore += np.log(final_probs[temp])
                 else:
-                    posScore += np.log(0.5/final_probs["posTotalSmoothing"])   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+                    posScore += np.log(0.5/final_probs["posTotalSmoothing"])   
 
                 temp = word + "/neg"
                 if temp in final_probs:
                     negScore += np.log(final_probs[temp])
                 else:
-                    negScore += np.log(0.5/final_probs["negTotalSmoothing"])   #NOT DONE NEED TO ADD NEW PROB AT PREV FNC
+                    negScore += np.log(0.5/final_probs["negTotalSmoothing"])   
 
             if posScore > negScore :
                 guessedLabels.append("pos")
@@ -228,7 +228,7 @@ if __name__ == "__main__":
     while accuracyQuestion.lower() not in ["yes", "no"]:
         accuracyQuestion = input("\nDo you want to evaluate the accuracy of the document file that was trained? (yes or no): ")
         if accuracyQuestion.lower() == "yes":
-            guessedLabels = document_classification(testDocs,finalProb)#list containing guessed labels for each documens
+            guessedLabels = document_classification(testDocs,finalProb)     #list containing guessed labels for each documents
             print("The accuracy is : ", document_accuracy(testLabels,guessedLabels))
 
     """
