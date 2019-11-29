@@ -2,7 +2,7 @@ from collections import Counter
 import numpy as np
 
 if __name__ == "__main__":
-    scoreQuestion, classifyQuestion, accuracyQuestion = "", "", ""
+    scoreQuestion, scoreFileLabel, classifyQuestion, accuracyQuestion, fileBool = "", "", "", "", False
 
     def document_separation(document):
         """Separates the document into 2 separate files, one for the review and the other for labels.
@@ -78,7 +78,6 @@ if __name__ == "__main__":
         finalProb["posTotalSmoothing"] = (totalNbWordsPos + (0.5 * len(totalNbWordsFreq)))
         finalProb["negTotalSmoothing"] = (totalNbWordsNeg + (0.5 * len(totalNbWordsFreq)))
 
-        print(finalProb)
         return finalProb
 
     def document_score(document, label, final_probs):
@@ -195,9 +194,13 @@ if __name__ == "__main__":
     print("----------------------------------------------------------------------------------------------------")
     print("Welcome to our Customer Review Sentiment Classification Program!\n")
 
-    dataFile = input("Please write the document file you would like to have trained (e.g. all_sentiment.txt ): ")
-    dataFile = open(dataFile, encoding="utf8")
-    # for testing purposes only, need to switch "all_sentiment_shuffled.txt" back to dataFile
+    while fileBool is False:
+        try:
+            fileBool = True
+            dataFile = input("\nPlease write the document file you would like to have trained (e.g. all_sentiment.txt ): ")
+            dataFile = open(dataFile, encoding="utf8")
+        except:
+            fileBool = False
 
     docsFile, labelsFile = document_separation(dataFile)
 
@@ -212,8 +215,9 @@ if __name__ == "__main__":
         scoreQuestion = input("\nDo you want to have a document scored? (yes or no): ")
         if scoreQuestion.lower() == "yes":
             scoreFileDoc = input("\nPlease write the document file you would like to have scored: ")
-            scoreFileLabel = input("\nPlease write the label of the document you would like to have scored: ")
-            print(document_score(scoreFileDoc, scoreFileLabel, finalProb))
+            while scoreFileLabel.lower() not in ["pos", "neg"]:
+                scoreFileLabel = input("\nPlease write the label of the document you would like to have scored: ")
+                print(document_score(scoreFileDoc, scoreFileLabel, finalProb))
 
     while classifyQuestion.lower() not in ["yes", "no"]:
         classifyQuestion = input("\nDo you want to have a document classified? (yes or no): ")
@@ -226,3 +230,29 @@ if __name__ == "__main__":
         if accuracyQuestion.lower() == "yes":
             guessedLabels = document_classification(testDocs,finalProb)#list containing guessed labels for each documens
             print("The accuracy is : ", document_accuracy(testLabels,guessedLabels))
+
+    """
+    Task 4:
+    
+        Example 1 : health neg 758.txt results were never consistent . many " err " readings . i was definitely no satisfied
+                    Positive Score: 1.1563219248016396e-49
+                    Negative Score: 1.0684234703227198e-49
+        Example 2 : health neg 309.txt i like the idea , but the slippers just are n't comfortable to stand on . it 's great while you are sitting , though
+                    Positive Score: 7.045658449914817e-65
+                    Negative Score: 6.737927616283555e-65
+        Example 3 : health neg 765.txt shaker is adequate for breaking down whey , but it leaks . i always have to wash my hands and the outside of the bottle after making anything with it
+                    Positive Score: 1.511951986499868e-87
+                    Negative Score: 1.379507197688343e-87
+         
+         In terms of the first example, one reason as to why it could have been classified erroneously would be that there was a grammatical error.
+         We believe what was meant to be written was "i was definitely not satisfied", however "no" was written instead, which could have potentially
+         caused a lower score for the negative class, hence classifiying the review as positive.
+         For the second example, there is bias because of the fact that the reviewer also talks about the positive aspects of the product. In fact,
+         the reviewer claimed the product review was overall negative, yet spent a majority of the review talking about the positives of the product.
+         This allowed for an erroneous classification of our classifier.
+         Finally, in terms of the third example, one of the reasons that the classification might have been induced into error is also similar to the
+         reason stated for example two. This review, stated as being a negative review by the reviewer, is mostly neutral in opinion, as it describes
+         one negative aspect of the product as well as one positive aspect. Furthermore, the review was also depicting a situation that occured with
+         the product that was neither positive nor negative. All of this could have led the Sentiment Classifier to miscalculate the probabilities
+         and caused the improper classification.
+    """
